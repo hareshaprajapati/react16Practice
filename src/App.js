@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './App.css';
+import classes from './App.css';
 import Person from "./Person/Person";
 
 class App extends Component {
@@ -49,15 +49,8 @@ class App extends Component {
     }
 
     render() {
-        const btnStyle = {
-            backgroundColor: 'green',
-            color: 'white',
-            font: 'inherit',
-            padding: '8px',
-            border: '1px solid blue',
-            cursor: 'pointer'
-        };
         let persons = null;
+        let btnClasses = ''
         if (this.state.showPersons) {
             persons = (
                 <div>
@@ -69,17 +62,17 @@ class App extends Component {
                     }
                 </div>
             );
-            btnStyle.backgroundColor = 'red';
+            btnClasses = classes.Red;
         }
         const h1ClassNames = [];
-        if (this.state.persons.length <= 2) h1ClassNames.push('Red')
-        if (this.state.persons.length <= 1) h1ClassNames.push('Bold')
+        if (this.state.persons.length <= 2) h1ClassNames.push(classes.Red)
+        if (this.state.persons.length <= 1) h1ClassNames.push(classes.Bold)
         return (
 
-            <div className="App">
+            <div className={[classes.App, 'AppGlobal'].join(' ')}>
                 <p className={h1ClassNames.join(' ')}>Hi cool</p>
                 {/*The problem with this syntax is that a different callback is created each time the LoggingButton renders*/}
-                <button style={btnStyle} onClick={() => this.togglePerson()}>show persons</button>
+                <button className={btnClasses}   onClick={() => this.togglePerson()}>show persons</button>
                 {persons}
             </div>
 
