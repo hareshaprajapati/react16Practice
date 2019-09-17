@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import Person from "./Person/Person";
+import Radium, { StyleRoot } from 'radium';
 
 class App extends Component {
 
@@ -55,7 +56,11 @@ class App extends Component {
             font: 'inherit',
             padding: '8px',
             border: '1px solid blue',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            ':hover': {
+                backgroundColor: 'yellow',
+                color: 'black'
+            }
         };
         let persons = null;
         if (this.state.showPersons) {
@@ -70,6 +75,10 @@ class App extends Component {
                 </div>
             );
             btnStyle.backgroundColor = 'red';
+            btnStyle[':hover'] = {
+                backgroundColor: 'orange',
+                color: 'black'
+            }
         }
         const h1ClassNames = [];
         if (this.state.persons.length <= 2) h1ClassNames.push('Red')
@@ -80,7 +89,9 @@ class App extends Component {
                 <p className={h1ClassNames.join(' ')}>Hi cool</p>
                 {/*The problem with this syntax is that a different callback is created each time the LoggingButton renders*/}
                 <button style={btnStyle} onClick={() => this.togglePerson()}>show persons</button>
+                <StyleRoot>
                 {persons}
+                </StyleRoot>
             </div>
 
         );
@@ -89,7 +100,7 @@ class App extends Component {
     //  return React.createElement('div', { className: 'App'} , React.createElement('h1',{} , 'Hi Cools'));
 }
 
-export default  App ;
+export default Radium(App);
 
 /*
 
