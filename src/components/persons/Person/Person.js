@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import classes from './Person.css'
 import withCClass from "../../../hoc/withCClass";
 import PropTypes from 'prop-types'
+import AuthContext from "../../../context/AuthContext";
 
 class Person extends Component {
 
@@ -9,6 +10,8 @@ class Person extends Component {
         super(props);
         this.inputElRef = React.createRef();
     }
+
+    static contextType = AuthContext;
     /*static getDerivedStateFromProps(props, state){
         console.log('Person.js getDerivedStateFromProps', props, state);
         return state;
@@ -17,6 +20,7 @@ class Person extends Component {
     componentDidMount(){
         // this.inputEl.focus();
         this.inputElRef.current.focus();
+        console.log(this.context.isAuthenticated);
     }
 
     render() {
@@ -24,7 +28,13 @@ class Person extends Component {
         if (false && Math.random() > 0.6) throw new Error('Went wrong')
         return (
             <React.Fragment>
-                {this.props.isAuthenticated ? <p>Logout</p> : <p> Login</p>}
+                    {  this.context.isAuthenticated ? <p>Logout</p> : <p> Login</p> }
+               {/* <AuthContext.Consumer>
+                    {(context) =>  context.isAuthenticated ? <p>Logout</p> : <p> Login</p>
+
+                    }
+                </AuthContext.Consumer>*/}
+
                 <p onClick={this.props.onClick}> Hi I am {this.props.name} and I am {this.props.age} </p>
                 <input
                     //ref={(e) => this.inputEl = e}
