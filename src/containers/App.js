@@ -4,6 +4,7 @@ import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
 // import WithClass from "../hoc/WithClass";
 import withCClass from "../hoc/withCClass";
+import AuthContext from "../context/AuthContext";
 
 class App extends Component {
 
@@ -89,25 +90,23 @@ class App extends Component {
             persons = (
                 <div>
                     <Persons
-                        isAuthenticated={this.state.isAuthenticated}
                         persons={this.state.persons}
-                             changed={this.nameChanged}
-                             onClick={this.deletePersonHandler}/>
+                        changed={this.nameChanged}
+                        onClick={this.deletePersonHandler}/>
                 </div>
             );
         }
         return (
             <React.Fragment>
                 <button onClick={() => this.setState({showCockpit: false})}>remove cockpit</button>
-                {
-                    this.state.showCockpit ? <Cockpit
-                        login = {this.authenticate}
-                        title={this.props.title} clicked={this.togglePerson}
-                                                      personsLength={this.state.persons.length}
-                                                      showPersons={this.state.showPersons}/> : null
-                }
+                <AuthContext.Provider value={{isAuthenticated: this.state.isAuthenticated, login: this.authenticate}}>
+                    {this.state.showCockpit ? <Cockpit
+                            title={this.props.title} clicked={this.togglePerson}
+                            personsLength={this.state.persons.length}
+                            showPersons={this.state.showPersons}/> : null}
 
-                {persons}
+                    {persons}
+                </AuthContext.Provider>
             </React.Fragment>
             /* {<WithClass classes={[classes.App, 'AppGlobal'].join(' ')}>
                  <button onClick={() => this.setState({showCockpit: false})}>remove cockpit</button>

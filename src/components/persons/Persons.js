@@ -16,7 +16,7 @@ class Persons extends Component{
 
     shouldComponentUpdate(nextProps, nextState){
         console.log('Persons.js shouldComponentUpdate', nextProps, nextState);
-        return nextProps.persons !== this.props.persons
+        return true || nextProps.persons !== this.props.persons
             || nextProps.onClick !== this.props.onClick
         || nextProps.changed !== this.props.changed
     }
@@ -41,7 +41,7 @@ class Persons extends Component{
         return   (
             this.props.persons.map((person, index) =>
                 <ErrorBoundry key={person.id}>
-                    <Person changed={(event) => this.props.changed(person.id, event)}
+                    <Person isAuthenticated={this.props.isAuthenticated} changed={(event) => this.props.changed(person.id, event)}
                             onClick={() => this.props.onClick(index)} name={person.name}
                             age={person.age}> My Life is Mishty</Person>
                 </ErrorBoundry>)

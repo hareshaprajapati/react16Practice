@@ -1,20 +1,21 @@
 import React, {useEffect, useRef} from 'react';
 import classes from './Cockpit.css'
+import AuthContext from "../../context/AuthContext";
 
 const cockpit = (props) => {
 
     const toggleBtnRef = useRef();
 
-    useEffect( () => {
+    useEffect(() => {
         console.log('cockpit.js useEffect');
         toggleBtnRef.current.click();
         return () => {
             console.log('cockpit.js cleanup work in useEffect'); // works like ngOnDestroy
         }
-    // }, [props.persons]) // run when persons changed
+        // }, [props.persons]) // run when persons changed
     }, []) // run first time only
 
-    useEffect( () => {
+    useEffect(() => {
         console.log('cockpit.js useEffect without argument');
         return () => {
             console.log('cockpit.js cleanup work in useEffect  without argument');
@@ -32,12 +33,16 @@ const cockpit = (props) => {
     if (props.personsLength <= 1) h1ClassNames.push(classes.Bold)
     return (
         <div className={classes.Cockpit}>
-        <p className={h1ClassNames.join(' ')}>{props.title}</p>
+            <p className={h1ClassNames.join(' ')}>{props.title}</p>
             {/*The problem with this syntax is that a different callback is created each time the LoggingButton renders
             () => this.togglePerson()
-           */ }
-            <button onClick={props.login}>Login</button>
-    <button ref={toggleBtnRef} className={btnClasses}   onClick={props.clicked}>show persons</button>
+           */}
+            <AuthContext.Consumer>
+                {(context) =>  <button onClick={context.login}>Login</button>
+                }
+            </AuthContext.Consumer>
+
+            <button ref={toggleBtnRef} className={btnClasses} onClick={props.clicked}>show persons</button>
         </div>
     );
 }
