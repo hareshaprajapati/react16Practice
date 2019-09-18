@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import classes from './App.css';
-import Person from "./Person/Person";
-import ErrorBoundry from './ErrorBoundry/ErrorBoundry'
+import Persons from "../components/Persons/Persons";
+import Cockpit from "../components/Cockpit/Cockpit";
+import WithClass from "../hoc/WithClass";
+import withCClass from "../hoc/withCClass";
+
 class App extends Component {
 
     personss = [
@@ -12,13 +15,34 @@ class App extends Component {
 
     constructor() {
         super();
+        console.log('app.js constructor');
         this.state = ({
             persons: this.personss,
             other: 'other',
-            showPersons: false
+            showPersons: false,
+            showCockpit: true,
+            changeCounter: 0
         })
     }
 
+    static getDerivedStateFromProps(props, state) {
+        console.log('app.js getDerivedStateFromProps', props, state);
+        return state;
+    }
+
+    componentDidMount() {
+        console.log('app.js componentDidMount');
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log('app.js shouldComponentUpdate', nextProps, nextState);
+        return true;
+    }
+
+    componentDidUpdate(prevProps, prevState, snapShot) {
+        console.log('app.js componentDidUpdate', prevProps, prevState);
+        console.log(snapShot)
+    }
 
     togglePerson = () => {
         this.setState({
@@ -26,7 +50,7 @@ class App extends Component {
         })
     }
 
-    deletePersonHandler(index) {
+    deletePersonHandler = (index) => {
         const persons = [...this.state.persons];
         // const persons = this.state.persons.slice();
         // const persons = Object.assign([],this.state.persons);
@@ -38,53 +62,59 @@ class App extends Component {
         })
     }
 
-    nameChanged(id, event) {
+    nameChanged = (id, event) => {
         const personIndex = this.state.persons.findIndex(p => p.id === id)
         const person = {...this.state.persons[personIndex]};
         // const person = Object.assign({} , this.state.persons[personIndex]);
         person.name = event.target.value;
         const persons = [...this.state.persons];
         persons[personIndex] = person;
-        this.setState({persons: persons})
+        this.setState((prevState, props) => {
+                return {persons: persons, changeCounter: prevState.changeCounter + 1}
+            }
+        )
     }
 
     render() {
+        console.log('app.js render');
         let persons = null;
-        let btnClasses = ''
         if (this.state.showPersons) {
             persons = (
                 <div>
-                    {
-                        this.state.persons.map((person, index) =>
-                            <ErrorBoundry key={person.id}>
-                            <Person changed={this.nameChanged.bind(this, person.id)}
-                                    onClick={this.deletePersonHandler.bind(this, index)} name={person.name}
-                                    age={person.age}> My Life is Mishty</Person>
-                            </ErrorBoundry>)
-                    }
+                    <Persons persons={this.state.persons}
+                             changed={this.nameChanged}
+                             onClick={this.deletePersonHandler}/>
                 </div>
             );
-            btnClasses = classes.Red;
         }
-        const h1ClassNames = [];
-        if (this.state.persons.length <= 2) h1ClassNames.push(classes.Red)
-        if (this.state.persons.length <= 1) h1ClassNames.push(classes.Bold)
         return (
+            <React.Fragment>
+                <button onClick={() => this.setState({showCockpit: false})}>remove cockpit</button>
+                {
+                    this.state.showCockpit ? <Cockpit title={this.props.title} clicked={this.togglePerson}
+                                                      personsLength={this.state.persons.length}
+                                                      showPersons={this.state.showPersons}/> : null
+                }
 
-            <div className={[classes.App, 'AppGlobal'].join(' ')}>
-                <p className={h1ClassNames.join(' ')}>Hi cool</p>
-                {/*The problem with this syntax is that a different callback is created each time the LoggingButton renders*/}
-                <button className={btnClasses}   onClick={() => this.togglePerson()}>show persons</button>
                 {persons}
-            </div>
+            </React.Fragment>
+            /* {<WithClass classes={[classes.App, 'AppGlobal'].join(' ')}>
+                 <button onClick={() => this.setState({showCockpit: false})}>remove cockpit</button>
+                 {
+                     this.state.showCockpit ?  <Cockpit title={this.props.title} clicked={this.togglePerson}
+                                                        personsLength={this.state.persons.length}
+                                                        showPersons={this.state.showPersons}/> : null
+                 }
 
+                 {persons}
+             </WithClass>}*/
         );
     }
 
     //  return React.createElement('div', { className: 'App'} , React.createElement('h1',{} , 'Hi Cools'));
 }
 
-export default  App ;
+export default withCClass(App, classes.App);
 
 /*
 
