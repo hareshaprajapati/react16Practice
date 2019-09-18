@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import classes from './App.css';
 import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
-import WithClass from "../hoc/WithClass";
+// import WithClass from "../hoc/WithClass";
 import withCClass from "../hoc/withCClass";
 
 class App extends Component {
@@ -21,7 +21,8 @@ class App extends Component {
             other: 'other',
             showPersons: false,
             showCockpit: true,
-            changeCounter: 0
+            changeCounter: 0,
+            isAuthenticated: false
         })
     }
 
@@ -75,13 +76,21 @@ class App extends Component {
         )
     }
 
+    authenticate = () => {
+        this.setState({
+            isAuthenticated: true
+        });
+    };
+
     render() {
         console.log('app.js render');
         let persons = null;
         if (this.state.showPersons) {
             persons = (
                 <div>
-                    <Persons persons={this.state.persons}
+                    <Persons
+                        isAuthenticated={this.state.isAuthenticated}
+                        persons={this.state.persons}
                              changed={this.nameChanged}
                              onClick={this.deletePersonHandler}/>
                 </div>
@@ -91,7 +100,9 @@ class App extends Component {
             <React.Fragment>
                 <button onClick={() => this.setState({showCockpit: false})}>remove cockpit</button>
                 {
-                    this.state.showCockpit ? <Cockpit title={this.props.title} clicked={this.togglePerson}
+                    this.state.showCockpit ? <Cockpit
+                        login = {this.authenticate}
+                        title={this.props.title} clicked={this.togglePerson}
                                                       personsLength={this.state.persons.length}
                                                       showPersons={this.state.showPersons}/> : null
                 }

@@ -1,9 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import classes from './Cockpit.css'
 
 const cockpit = (props) => {
+
+    const toggleBtnRef = useRef();
+
     useEffect( () => {
         console.log('cockpit.js useEffect');
+        toggleBtnRef.current.click();
         return () => {
             console.log('cockpit.js cleanup work in useEffect'); // works like ngOnDestroy
         }
@@ -29,10 +33,11 @@ const cockpit = (props) => {
     return (
         <div className={classes.Cockpit}>
         <p className={h1ClassNames.join(' ')}>{props.title}</p>
-    {/*The problem with this syntax is that a different callback is created each time the LoggingButton renders
-    () => this.togglePerson()
-    */}
-    <button className={btnClasses}   onClick={props.clicked}>show persons</button>
+            {/*The problem with this syntax is that a different callback is created each time the LoggingButton renders
+            () => this.togglePerson()
+           */ }
+            <button onClick={props.login}>Login</button>
+    <button ref={toggleBtnRef} className={btnClasses}   onClick={props.clicked}>show persons</button>
         </div>
     );
 }
